@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "npm run build:watch & npx servor --reload",
+    "build": "npx tailwindcss -i ./src/input.css -o ./dist/output.css",
+    "build:watch": "npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
+  },
+  "dependencies": {
+    "servor": "^4.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2"
+  }
+}
