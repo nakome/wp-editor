@@ -125,8 +125,8 @@ function showToast(message, type = 'success') {
     type === 'success'
       ? 'bg-green-500'
       : type === 'error'
-      ? 'bg-red-500'
-      : 'bg-blue-500';
+        ? 'bg-red-500'
+        : 'bg-blue-500';
 
   elements.toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform transition-transform duration-300 z-50 ${bgColor} text-white`;
   elements.toast.textContent = message;
@@ -145,7 +145,7 @@ function startProgress() {
 function completeProgress() {
   elements.progressBar.classList.add('complete');
   elements.progressBar.style.width = '100%';
-  
+
   setTimeout(() => {
     elements.progressBar.classList.add('fade-out');
     setTimeout(() => {
@@ -330,9 +330,8 @@ function renderCategories() {
         class="category-checkbox w-4 h-4 rounded text-blue-600"
         ${selectedCategories.includes(cat.id) ? 'checked' : ''}
       />
-      <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">${
-        cat.name
-      }</span>
+      <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">${cat.name
+        }</span>
     </label>
   `
     )
@@ -410,10 +409,9 @@ function renderTagSuggestions() {
       <button
         type="button"
         data-tag-name="${tag.name.replace(/"/g, '&quot;')}"
-        class="tag-suggestion-item w-full text-left px-3 py-2 text-sm transition-colors ${
-          index === tagSearchState.activeIndex
-            ? 'bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100'
-            : 'hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200'
+        class="tag-suggestion-item w-full text-left px-3 py-2 text-sm transition-colors ${index === tagSearchState.activeIndex
+          ? 'bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100'
+          : 'hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200'
         }"
       >
         ${tag.name}
@@ -518,15 +516,56 @@ function renderPosts(posts) {
   elements.postsContainer.innerHTML = posts
     .map(
       (post) => `
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+    <div class="relative overflow-visible bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+      <details class="post-actions-menu absolute top-3 right-3 z-20">
+        <summary
+          class="list-none flex h-8 w-8 items-center justify-center cursor-pointer bg-transparent"
+          aria-label="Abrir acciones del post"
+          aria-haspopup="menu"
+          onclick="event.preventDefault(); const menu = this.parentElement; const wasOpen = menu.hasAttribute('open'); document.querySelectorAll('.post-actions-menu[open]').forEach((item) => item.removeAttribute('open')); if (!wasOpen) { menu.setAttribute('open', ''); }"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <circle cx="10" cy="4" r="1.5"></circle>
+            <circle cx="10" cy="10" r="1.5"></circle>
+            <circle cx="10" cy="16" r="1.5"></circle>
+          </svg>
+        </summary>
+
+        <div class="post-actions-panel absolute right-0 top-full mt-1 w-32 rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 shadow-lg overflow-hidden" role="menu">
+          <button
+            type="button"
+            onclick="this.closest('details').removeAttribute('open'); previewPost(${post.id});"
+            class="w-full text-left text-sm text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600"
+          >
+            Ver
+          </button>
+          <button
+            type="button"
+            onclick="this.closest('details').removeAttribute('open'); editPost(${post.id});"
+            class="w-full text-left text-sm text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600"
+          >
+            Editar
+          </button>
+          <button
+            type="button"
+            onclick="this.closest('details').removeAttribute('open'); confirmDelete(${post.id}, '${post.title.rendered.replace(
+        /'/g,
+        "\\'"
+      )}');"
+            class="w-full text-left text-sm text-red-600 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30"
+          >
+            Borrar
+          </button>
+        </div>
+      </details>
+
       <div class="flex items-start justify-between mb-2">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex-1">
           ${post.title.rendered || 'Sin título'}
         </h3>
-        <span class="ml-2 px-2 py-1 text-xs rounded-full ${
-          post.status === 'publish'
-            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+        <span class="ml-2 mr-10 px-2 py-1 text-xs rounded-full ${post.status === 'publish'
+          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
         }">
           ${post.status === 'publish' ? 'Publicado' : 'Borrador'}
         </span>
@@ -538,66 +577,41 @@ function renderPosts(posts) {
           day: 'numeric',
         })}
       </div>
-      ${
-        post.categories && post.categories.length > 0
+      ${post.categories && post.categories.length > 0
           ? `<div class="flex flex-wrap gap-1 mb-2">
         ${post.categories
-          .map(
-            (catId) => `
+            .map(
+              (catId) => `
           <span class="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded">
             ${allCategories.find((c) => c.id === catId)?.name || ''}
           </span>
         `
-          )
-          .join('')}
+            )
+            .join('')}
       </div>`
           : ''
-      }
-      ${
-        post.tags && post.tags.length > 0
+        }
+      ${post.tags && post.tags.length > 0
           ? `<div class="flex flex-wrap gap-1 mb-3">
         ${post.tags
-          .slice(0, 3)
-          .map((tagId) => {
-            // USAR allTags para mostrar el NOMBRE
-            const tagName =
-              allTags.find((t) => t.id === tagId)?.name ||
-              'Etiqueta Desconocida';
-            return `
+            .slice(0, 3)
+            .map((tagId) => {
+              // USAR allTags para mostrar el NOMBRE
+              const tagName =
+                allTags.find((t) => t.id === tagId)?.name ||
+                'Etiqueta Desconocida';
+              return `
                 <span class="text-xs px-2 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded">
                   ${tagName}
                 </span>
               `;
-          })
-          .join('')}
+            })
+            .join('')}
       </div>`
           : ''
-      }
-      <div class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+        }
+      <div class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
         ${post.excerpt.rendered.replace(/<[^>]*>/g, '')}
-      </div>
-      <div class="flex gap-2">
-        <button
-          onclick="previewPost(${post.id})"
-          class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm font-medium"
-        >
-          Ver
-        </button>
-        <button
-          onclick="editPost(${post.id})"
-          class="flex-1 px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors text-sm font-medium"
-        >
-          Editar
-        </button>
-        <button
-          onclick="confirmDelete(${post.id}, '${post.title.rendered.replace(
-        /'/g,
-        "\\'"
-      )}')"
-          class="flex-1 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm font-medium"
-        >
-          Borrar
-        </button>
       </div>
     </div>
   `

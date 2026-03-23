@@ -1,438 +1,279 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WordPress Manager</title>
-    <link rel="stylesheet" href="./dist/output.css" />
-    <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
-  </head>
-  <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-    <div id="progressBar" class="progress-bar hidden"></div>
-    <header class="bg-white dark:bg-gray-800 shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-            WordPress Manager
-          </h1>
-          <div class="flex items-center gap-4">
-            <button
-              id="themeToggle"
-              class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-              title="Cambiar tema"
-            >
-              <svg
-                id="themeIconLight"
-                class="w-5 h-5 text-gray-800 dark:text-gray-200 hidden dark:block"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                ></path>
-              </svg>
-              <svg
-                id="themeIconDark"
-                class="w-5 h-5 text-gray-800 dark:text-gray-200 block dark:hidden"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                ></path>
-              </svg>
-            </button>
-            <button
-              id="configBtn"
-              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
-            >
-              Configuración
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div
-        id="configAlert"
-        class="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 hidden"
-      >
-        <div class="flex items-center">
-          <svg
-            class="w-5 h-5 text-yellow-600 dark:text-yellow-500 mr-3"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <p class="text-sm text-yellow-800 dark:text-yellow-200">
-            Por favor, configura la conexión a WordPress para comenzar.
-          </p>
-        </div>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WordPress Manager</title>
+  <link rel="stylesheet" href="./dist/output.css?v=20260323" />
+  <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
+</head>
 
-      <div class="mb-6 flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
-          Posts
-        </h2>
-        <button
-          id="newPostBtn"
-          class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium flex items-center gap-2"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 4v16m8-8H4"
-            ></path>
-          </svg>
-          Nuevo Post
-        </button>
-      </div>
-
-      <div id="loading" class="flex justify-center items-center py-12 hidden">
-        <div
-          class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
-        ></div>
-      </div>
-
-      <div
-        id="postsContainer"
-        class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-      ></div>
-
-      <div
-        id="postsPagination"
-        class="mt-6 hidden flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-      >
-        <p
-          id="postsCountInfo"
-          class="text-sm text-gray-600 dark:text-gray-300"
-        >
-          0 posts
-        </p>
-        <div class="flex items-center gap-2">
-          <button
-            id="prevPageBtn"
-            type="button"
-            class="px-3 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition-colors text-sm font-medium"
-          >
-            Anterior
+<body class="user-select-none bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+  <div id="progressBar" class="progress-bar hidden"></div>
+  <header class="bg-white dark:bg-gray-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          WordPress Manager
+        </h1>
+        <div class="flex items-center gap-4">
+          <button id="themeToggle"
+            class=" cursor-pointer p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            title="Cambiar tema">
+            <svg id="themeIconLight" class="w-5 h-5 text-gray-800 dark:text-gray-200 hidden dark:block" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+              </path>
+            </svg>
+            <svg id="themeIconDark" class="w-5 h-5 text-gray-800 dark:text-gray-200 block dark:hidden" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
           </button>
-          <span
-            id="pageInfo"
-            class="text-sm text-gray-700 dark:text-gray-200 min-w-24 text-center"
-            >Página 1</span
-          >
-          <button
-            id="nextPageBtn"
-            type="button"
-            class="px-3 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition-colors text-sm font-medium"
-          >
-            Siguiente
-          </button>
-        </div>
-      </div>
-
-      <div id="emptyState" class="text-center py-12 hidden">
-        <svg
-          class="mx-auto h-12 w-12 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          ></path>
-        </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-          No hay posts
-        </h3>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Comienza creando un nuevo post.
-        </p>
-      </div>
-    </main>
-
-    <div
-      id="configModal"
-      class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50"
-    >
-      <div
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6"
-      >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Configuración
-        </h3>
-        <form id="configForm" class="space-y-4">
-          <div>
-            <label
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              URL de la API
-            </label>
-            <input
-              type="text"
-              id="apiUrl"
-              placeholder="https://tusitio.com/wp-json/wp/v2/"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              required
-            />
-          </div>
-          <div>
-            <label
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Usuario
-            </label>
-            <input
-              type="text"
-              id="username"
-              placeholder="usuario"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              required
-            />
-          </div>
-          <div>
-            <label
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Contraseña de Aplicación
-            </label>
-            <input
-              type="password"
-              id="appPassword"
-              placeholder="xxxx xxxx xxxx xxxx"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              required
-            />
-          </div>
-          <div class="flex gap-3 pt-4">
-            <button
-              type="submit"
-              class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
-            >
-              Guardar
-            </button>
-            <button
-              type="button"
-              id="cancelConfig"
-              class="flex-1 px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-lg transition-colors font-medium"
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div
-      id="editorModal"
-      class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center p-4 z-50 overflow-y-auto"
-    >
-      <div
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full p-6 my-8 max-h-full flex flex-col"
-      >
-        <h3
-          id="editorTitle"
-          class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex-shrink-0"
-        >
-          Nuevo Post
-        </h3>
-        <form
-          id="postForm"
-          class="space-y-4 flex flex-col h-90 py-10 overflow-auto"
-        >
-          <input type="hidden" id="postId" />
-
-          <div class="flex-shrink-0">
-            <label
-              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >
-              Título
-            </label>
-            <input
-              type="text"
-              id="postTitle"
-              placeholder="Título del post"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              required
-            />
-          </div>
-
-          <div class="flex-grow overflow-y-auto pr-2 space-y-4">
-            <div>
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Contenido
-              </label>
-              <textarea
-                id="postContent"
-                name="postContent"
-                placeholder="Contenido del post"
-                class="tinymce-editor"
-              ></textarea>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Categorías
-                </label>
-                <input
-                  type="text"
-                  id="categoriesFilter"
-                  placeholder="Filtrar categorías..."
-                  class="w-full mb-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                />
-                <div
-                  id="categoriesContainer"
-                  class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 max-h-48 overflow-y-auto bg-white dark:bg-gray-700"
-                >
-                  <div class="text-gray-500 dark:text-gray-400 text-sm">
-                    Cargando categorías...
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label
-                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                >
-                  Etiquetas
-                </label>
-                <input
-                  type="text"
-                  id="postTags"
-                  placeholder="Escribe etiquetas separadas por comas"
-                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  autocomplete="off"
-                />
-                <div
-                  id="tagSuggestions"
-                  class="hidden mt-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 max-h-48 overflow-y-auto"
-                ></div>
-                <div id="tagsPreview" class="flex flex-wrap gap-2 mt-2"></div>
-              </div>
-            </div>
-            <div>
-              <label
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Estado
-              </label>
-              <select
-                id="postStatus"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                <option value="draft">Borrador</option>
-                <option value="publish">Publicado</option>
-              </select>
-            </div>
-          </div>
-          <div class="flex gap-3 pt-4 flex-shrink-0">
-            <button
-              type="submit"
-              class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
-            >
-              Guardar
-            </button>
-            <button
-              type="button"
-              id="cancelEditor"
-              class="flex-1 px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-lg transition-colors font-medium"
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Preview Modal -->
-    <div
-      id="previewModal"
-      class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center p-4 z-50 overflow-y-auto"
-    >
-      <div
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full p-5"
-      >
-
-        <div class="flex items-center justify-between">
-          <h3
-            id="previewTitle"
-            class="text-2xl font-semibold text-gray-900 dark:text-white mb-2"
-          ></h3>
-          <button
-            id="closePreview"
-            class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
+          <button id="configBtn"
+            class=" cursor-pointer px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium inline-flex items-center gap-2"
+            aria-label="Configuración">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z">
+              </path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z">
+              </path>
             </svg>
           </button>
         </div>
+      </div>
+    </div>
+  </header>
 
-        <div class="text-sm text-gray-500 dark:text-gray-400">
-          <span id="previewDate"></span>
-          <span
-            id="previewStatus"
-            class="ml-4 px-2 py-1 rounded-full text-xs"
-          ></span>
-        </div>
-
-        <div
-          id="previewContent"
-          class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 mb-6 line-clamp-none max-h-96 py-10 overflow-auto"
-        ></div>
-        
-        <div class="flex flex-wrap gap-2">
-          <div id="previewCategories" class="flex flex-wrap gap-2"></div>
-          <div id="previewTags" class="flex flex-wrap gap-2"></div>
-        </div>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div id="configAlert"
+      class=" cursor-pointer  mb-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 hidden">
+      <div class="flex items-center">
+        <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd"
+            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+            clip-rule="evenodd"></path>
+        </svg>
+        <p class="text-sm text-yellow-800 dark:text-yellow-200">
+          Por favor, configura la conexión a WordPress para comenzar.
+        </p>
       </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div
-      id="toast"
-      class="fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-y-full transition-transform duration-300 z-50"
-    ></div>
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+        Posts
+      </h2>
+      <button id="newPostBtn"
+        class=" cursor-pointer px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+      </button>
+    </div>
 
-    <script src="./api-wp.js"></script>
-    <script src="./app.js"></script>
-  </body>
+    <div id="loading" class="flex justify-center items-center py-12 hidden">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <div id="postsContainer" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"></div>
+
+    <div id="postsPagination" class="mt-6 hidden flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <p id="postsCountInfo" class="text-sm text-gray-600 dark:text-gray-300">
+        0 posts
+      </p>
+      <div class="flex items-center gap-2">
+        <button id="prevPageBtn" type="button"
+          class=" cursor-pointer px-3 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition-colors text-sm font-medium">
+          Anterior
+        </button>
+        <span id="pageInfo" class="text-sm text-gray-700 dark:text-gray-200 min-w-24 text-center">Página 1</span>
+        <button id="nextPageBtn" type="button"
+          class=" cursor-pointer px-3 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition-colors text-sm font-medium">
+          Siguiente
+        </button>
+      </div>
+    </div>
+
+    <div id="emptyState" class="text-center py-12 hidden">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+        </path>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+        No hay posts
+      </h3>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Comienza creando un nuevo post.
+      </p>
+    </div>
+  </main>
+
+  <div id="configModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        Configuración
+      </h3>
+      <form id="configForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            URL de la API
+          </label>
+          <input type="text" id="apiUrl" placeholder="https://tusitio.com/wp-json/wp/v2/"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Usuario
+          </label>
+          <input type="text" id="username" placeholder="usuario"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Contraseña de Aplicación
+          </label>
+          <input type="password" id="appPassword" placeholder="xxxx xxxx xxxx xxxx"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            required />
+        </div>
+        <div class="flex gap-3 pt-4">
+          <button type="submit"
+            class=" cursor-pointer flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">
+            Guardar
+          </button>
+          <button type="button" id="cancelConfig"
+            class=" cursor-pointer flex-1 px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-lg transition-colors font-medium">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="editorModal"
+    class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full p-6 my-8 max-h-full flex flex-col">
+      <h3 id="editorTitle" class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex-shrink-0">
+        Nuevo Post
+      </h3>
+      <form id="postForm" class="space-y-4 flex flex-col py-10 overflow-auto">
+        <input type="hidden" id="postId" />
+
+        <div class="flex-shrink-0">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Título
+          </label>
+          <input type="text" id="postTitle" placeholder="Título del post"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+            required />
+        </div>
+
+        <div class="flex-grow overflow-y-auto pr-2 space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Contenido
+            </label>
+            <textarea id="postContent" name="postContent" placeholder="Contenido del post"
+              class="tinymce-editor"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Categorías
+              </label>
+              <input type="text" id="categoriesFilter" placeholder="Filtrar categorías..."
+                class="w-full mb-2 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+              <div id="categoriesContainer"
+                class="border border-gray-300 dark:border-gray-600 rounded-lg p-3 max-h-48 overflow-y-auto bg-white dark:bg-gray-700">
+                <div class="text-gray-500 dark:text-gray-400 text-sm">
+                  Cargando categorías...
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Etiquetas
+              </label>
+              <input type="text" id="postTags" placeholder="Escribe etiquetas separadas por comas"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                autocomplete="off" />
+              <div id="tagSuggestions"
+                class="hidden mt-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 max-h-48 overflow-y-auto">
+              </div>
+              <div id="tagsPreview" class="flex flex-wrap gap-2 mt-2"></div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Estado
+            </label>
+            <select id="postStatus"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+              <option value="draft">Borrador</option>
+              <option value="publish">Publicado</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-3 pt-4 flex-shrink-0">
+          <button type="submit"
+            class=" cursor-pointer flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium">
+            Guardar
+          </button>
+          <button type="button" id="cancelEditor"
+            class=" cursor-pointer flex-1 px-4 py-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 rounded-lg transition-colors font-medium">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Preview Modal -->
+  <div id="previewModal"
+    class="fixed inset-0 bg-slate-900/80 hidden items-center justify-center p-4 z-50 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full p-5">
+
+      <div class="flex items-center justify-between">
+        <h3 id="previewTitle" class="text-2xl font-semibold text-gray-900 dark:text-white mb-2"></h3>
+        <button id="closePreview" class=" cursor-pointer text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="text-sm text-gray-500 dark:text-gray-400">
+        <span id="previewDate"></span>
+        <span id="previewStatus" class="ml-4 px-2 py-1 rounded-full text-xs"></span>
+      </div>
+
+      <div id="previewContent"
+        class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 mb-6 line-clamp-none max-h-96 py-10 overflow-auto">
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <div id="previewCategories" class="flex flex-wrap gap-2"></div>
+        <div id="previewTags" class="flex flex-wrap gap-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast"
+    class=" cursor-pointer fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg transform translate-y-full transition-transform duration-300 z-50">
+  </div>
+
+  <script src="./api-wp.js"></script>
+  <script src="./app.js"></script>
+</body>
+
 </html>

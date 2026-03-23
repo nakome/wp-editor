@@ -1,149 +1,192 @@
 # WordPress Manager
 
-Aplicación web moderna para gestionar posts de WordPress con interfaz intuitiva y tema claro/oscuro.
+Aplicación web en JavaScript nativo para gestionar posts de WordPress desde una interfaz simple, responsive y con soporte para tema claro/oscuro.
 
-## Características
+## Qué Hace
 
-- Ver, crear, editar y eliminar posts de WordPress
-- Editor WYSIWYG con TinyMCE para contenido formateado
-- Gestión de categorías con selección múltiple
-- Gestión de etiquetas con preview en tiempo real
-- Interfaz moderna con Tailwind CSS
-- Tema claro/oscuro con persistencia
-- Configuración segura de credenciales con localStorage
-- Notificaciones toast para feedback del usuario
-- Diseño responsive para móvil y escritorio
-- Autenticación mediante Application Passwords de WordPress
+- Lista posts de WordPress con paginación.
+- Crea, edita, previsualiza y elimina posts.
+- Edita contenido con TinyMCE.
+- Asigna categorías existentes con filtro en tiempo real.
+- Busca etiquetas remotas, las autocompleta y crea etiquetas nuevas si no existen.
+- Muestra estado, fecha, categorías, etiquetas y extracto de cada post.
+- Guarda la configuración de conexión en el `localStorage` del navegador.
+- Incluye toasts, barra de progreso y skeleton loaders para mejorar la UX.
 
-## Configuración
+## Captura Funcional Del Proyecto
 
-### 1. Generar Application Password en WordPress
+La interfaz principal incluye:
 
-Para usar esta aplicación, necesitas generar una contraseña de aplicación en WordPress:
+- Cabecera con cambio de tema y acceso a configuración.
+- Listado de cards de posts con menú de acciones.
+- Modal de configuración para conectar con la REST API de WordPress.
+- Modal editor para crear o modificar posts.
+- Modal de previsualización para revisar el contenido sin salir de la app.
+- Estado vacío cuando no hay posts disponibles.
 
-1. Inicia sesión en tu sitio WordPress
-2. Ve a **Usuarios → Perfil**
-3. Desplázate hasta la sección **Contraseñas de Aplicación**
-4. Ingresa un nombre para la aplicación (ej: "WordPress Manager")
-5. Haz clic en **Añadir nueva contraseña de aplicación**
-6. Copia la contraseña generada (formato: `xxxx xxxx xxxx xxxx`)
+## Requisitos
 
-### 2. Configurar la Aplicación
+- Node.js 18 o superior recomendado.
+- Un sitio WordPress con la REST API disponible.
+- Un usuario con permisos para gestionar posts.
+- Una Application Password de WordPress.
 
-1. Abre la aplicación en tu navegador
-2. Haz clic en el botón **Configuración**
-3. Completa los campos:
-   - **URL de la API**: La URL base de tu WordPress (ej: `https://tusitio.com/wp-json/wp/v2/`)
-   - **Usuario**: Tu nombre de usuario de WordPress
-   - **Contraseña de Aplicación**: La contraseña generada en el paso anterior
-4. Haz clic en **Guardar**
-
-La configuración se guardará de forma segura en el localStorage de tu navegador.
-
-## Uso
-
-### Ver Posts
-
-Los posts se cargan automáticamente en la página principal mostrando:
-- Título del post
-- Fecha de publicación
-- Extracto del contenido
-- Estado (Publicado/Borrador)
-
-### Crear Nuevo Post
-
-1. Haz clic en el botón **Nuevo Post**
-2. Completa el formulario:
-   - **Título**: Nombre del post
-   - **Contenido**: Usa el editor WYSIWYG para formatear texto, agregar listas, enlaces e imágenes
-   - **Categorías**: Selecciona una o más categorías existentes con los checkboxes
-   - **Etiquetas**: Escribe etiquetas separadas por comas (aparecerán como preview mientras escribes)
-   - **Estado**: Elige entre Borrador o Publicado
-3. Haz clic en **Guardar**
-
-#### Editor de Contenido
-
-El editor WYSIWYG incluye las siguientes funciones:
-- Formateo de texto (negrita, cursiva, subrayado)
-- Alineación de párrafos
-- Listas ordenadas y desordenadas
-- Insertar enlaces e imágenes
-- Ver código HTML
-- Deshacer/Rehacer cambios
-
-#### Categorías y Etiquetas
-
-- **Categorías**: Selecciona múltiples categorías existentes en tu sitio WordPress
-- **Etiquetas**: Crea etiquetas nuevas escribiendo nombres separados por comas. Las etiquetas se crearán automáticamente si no existen
-
-### Editar Post
-
-1. Haz clic en el botón **Editar** del post que deseas modificar
-2. Modifica los campos necesarios
-3. Haz clic en **Guardar**
-
-### Ver Post
-
-Haz clic en el botón **Ver** para abrir el post en una nueva pestaña de tu sitio WordPress.
-
-### Eliminar Post
-
-1. Haz clic en el botón **Borrar**
-2. Confirma la eliminación en el diálogo
-3. El post será eliminado permanentemente
-
-### Cambiar Tema
-
-Haz clic en el icono de sol/luna en la esquina superior derecha para alternar entre tema claro y oscuro.
-
-## Tecnologías
-
-- HTML5
-- JavaScript (ES6+)
-- Tailwind CSS (compilado)
-- PostCSS
-- TinyMCE 6 (Editor WYSIWYG)
-- WordPress REST API
-- LocalStorage API
-
-## Archivos del Proyecto
-
-- `index.html` - Estructura HTML de la aplicación
-- `app.js` - Lógica de la aplicación
-- `api-wordpress.js` - Cliente de la API REST de WordPress
-- `package.json` - Configuración del proyecto
-
-## API de WordPress
-
-Esta aplicación utiliza la clase `WordPressAPIClient` que implementa las operaciones CRUD:
-
-### Métodos Principales
-
-| Método | Operación | Descripción |
-|--------|-----------|-------------|
-| `get(resource, id, params)` | READ | Obtiene uno o varios recursos |
-| `create(resource, data)` | CREATE | Crea un nuevo recurso |
-| `update(resource, id, data)` | UPDATE | Actualiza un recurso existente |
-| `delete(resource, id, force)` | DELETE | Elimina un recurso |
-
-## Seguridad
-
-- Las credenciales se almacenan localmente en el navegador
-- Se utiliza autenticación Basic Auth con Application Passwords
-- Los Application Passwords son más seguros que las contraseñas de usuario
-- Las credenciales nunca se envían a servidores externos
-
-## Inicio Rápido
+## Instalación
 
 ```bash
 npm install
+```
+
+## Desarrollo
+
+Servidor de desarrollo con recarga automática:
+
+```bash
 npm start
 ```
 
-La aplicación se abrirá automáticamente en tu navegador predeterminado.
+El comando ejecuta:
 
-### Comandos Disponibles
+- compilación de Tailwind en modo watch
+- servidor local mediante `servor`
 
-- `npm start` - Inicia el servidor de desarrollo con compilación automática de Tailwind
-- `npm run build` - Compila Tailwind CSS una sola vez
-- `npm run build:watch` - Compila Tailwind CSS en modo vigilancia (watch)
+Si prefieres ejecutar cada parte por separado:
+
+```bash
+npm run build:watch
+```
+
+```bash
+npx servor --reload
+```
+
+## Build
+
+Compila el CSS una sola vez:
+
+```bash
+npm run build
+```
+
+El CSS generado se escribe en `dist/output.css`.
+
+## Configuración De WordPress
+
+### 1. Generar Una Application Password
+
+1. Inicia sesión en tu sitio WordPress.
+2. Ve a `Usuarios > Perfil`.
+3. Busca la sección `Contraseñas de aplicación`.
+4. Crea una nueva contraseña para esta app.
+5. Copia la contraseña generada.
+
+### 2. Configurar La Aplicación
+
+Dentro de la app, abre `Configuración` y completa:
+
+- `URL de la API`: por ejemplo `https://tusitio.com/wp-json/wp/v2/`
+- `Usuario`: tu usuario de WordPress
+- `Contraseña de Aplicación`: la contraseña generada en el paso anterior
+
+La configuración se guarda en `localStorage` bajo la clave `wpConfig`.
+
+## Flujo De Uso
+
+### Ver Posts
+
+El listado principal carga:
+
+- título
+- fecha
+- estado
+- categorías
+- hasta 3 etiquetas por card
+- extracto
+
+Cuando el sitio tiene muchos posts, la navegación se hace con paginación usando `Anterior` y `Siguiente`.
+
+### Crear Un Post
+
+1. Haz clic en `Nuevo Post`.
+2. Completa el título.
+3. Escribe el contenido en TinyMCE.
+4. Selecciona categorías.
+5. Añade etiquetas separadas por comas.
+6. Define el estado como `draft` o `publish`.
+7. Guarda los cambios.
+
+### Editar Un Post
+
+1. Abre el menú de acciones de la card.
+2. Elige `Editar`.
+3. Modifica los campos necesarios.
+4. Guarda.
+
+### Previsualizar Un Post
+
+1. Abre el menú de acciones de la card.
+2. Elige `Ver`.
+3. La app abre un modal de vista previa con contenido, fecha, estado, categorías y etiquetas.
+
+### Eliminar Un Post
+
+1. Abre el menú de acciones.
+2. Elige `Borrar`.
+3. Confirma la operación en el diálogo nativo del navegador.
+
+## Gestión De Categorías Y Etiquetas
+
+### Categorías
+
+- Se cargan desde la REST API.
+- Se muestran como checkboxes.
+- Se pueden filtrar por texto dentro del modal de edición.
+
+### Etiquetas
+
+- Se escriben como una lista separada por comas.
+- La app consulta sugerencias remotas desde WordPress.
+- Se pueden recorrer sugerencias con teclado usando flechas y `Enter`.
+- Si una etiqueta no existe, la app intenta crearla antes de guardar el post.
+
+## Tecnologías
+
+- HTML
+- JavaScript nativo
+- Tailwind CSS v4
+- PostCSS
+- TinyMCE 6
+- WordPress REST API
+- `servor` para el servidor local
+
+## Estructura Del Proyecto
+
+- `index.html`: layout principal y modales.
+- `app.js`: lógica de UI, posts, etiquetas, categorías, paginación y eventos.
+- `api-wp.js`: cliente para consumir la WordPress REST API.
+- `src/input.css`: entrada de Tailwind y estilos adicionales.
+- `dist/output.css`: CSS compilado.
+- `demo-wxr.xml`: archivo de ejemplo para importación de contenido en WordPress.
+- `package.json`: scripts y dependencias.
+
+## Scripts Disponibles
+
+- `npm start`: inicia entorno de desarrollo.
+- `npm run dev`: alias del flujo de desarrollo actual.
+- `npm run build`: compila Tailwind una vez.
+- `npm run build:watch`: recompila Tailwind en modo watch.
+
+## Seguridad Y Limitaciones
+
+- Las credenciales se almacenan en el navegador del usuario, no en un backend propio.
+- La app depende de que la REST API de WordPress permita autenticación con Application Passwords.
+- No hay gestión de medios ni páginas; el foco actual está en posts.
+- La app usa `confirm()` para la eliminación de posts.
+
+## Datos De Prueba
+
+El repositorio incluye `demo-wxr.xml`, útil para poblar un WordPress de pruebas con contenido de ejemplo.
+
+## Changelog
+
+El historial del proyecto está en [CHANGELOG.md](CHANGELOG.md).

@@ -5,10 +5,12 @@
 @source "../index.html";
 @source "../app.js";
 
+
 @keyframes shimmer {
   0% {
     background-position: -1000px 0;
   }
+
   100% {
     background-position: 1000px 0;
   }
@@ -18,9 +20,11 @@
   0% {
     width: 10%;
   }
+
   50% {
     width: 70%;
   }
+
   100% {
     width: 90%;
   }
@@ -30,29 +34,26 @@
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }
 }
 
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    #f3f4f6 0%,
-    #e5e7eb 50%,
-    #f3f4f6 100%
-  );
+  background: linear-gradient(90deg,
+      #f3f4f6 0%,
+      #e5e7eb 50%,
+      #f3f4f6 100%);
   background-size: 1000px 100%;
   animation: shimmer 2s infinite;
 }
 
 .dark .skeleton {
-  background: linear-gradient(
-    90deg,
-    #374151 0%,
-    #4b5563 50%,
-    #374151 100%
-  );
+  background: linear-gradient(90deg,
+      #374151 0%,
+      #4b5563 50%,
+      #374151 100%);
   background-size: 1000px 100%;
   animation: shimmer 2s infinite;
 }
@@ -76,4 +77,37 @@
 
 .progress-bar.fade-out {
   animation: fadeOut 0.5s ease-out forwards;
+}
+
+button {
+  padding: 5px 8px !important;
+  border-radius: 4px !important;
+}
+
+.post-actions-menu summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.post-actions-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.post-actions-menu {
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline-end: 0.75rem;
+}
+
+.post-actions-menu>div {
+  display: none;
+  position: absolute;
+  inset-block-start: calc(100% + 0.25rem);
+  inset-inline-end: 0;
+}
+
+.post-actions-menu[open]>div {
+  display: block;
 }
